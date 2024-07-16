@@ -49,3 +49,21 @@ export type TCategories = {
 }
 
 export type SchemeType = "light" | "dark"
+
+
+// types/next-auth.d.ts
+import 'next-auth';
+
+declare module 'next-auth' {
+  /**
+   * NextAuth.js의 Session 타입 확장
+   */
+  interface Session {
+    user: {
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+      role?: string; // 'role' 속성 추가
+    }
+  }
+}
