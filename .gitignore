@@ -37,3 +37,6 @@ yarn-error.log*
 # public/sitemap.xml
 
 /.firebase
+
+# Yarn 설치 상태 파일
+.yarn/install-state.gz
