@@ -61,6 +61,7 @@ const NotionRenderer: FC<Props> = ({ recordMap }) => {
       <_NotionRenderer
         darkMode={scheme === "dark"}
         recordMap={recordMap}
+        fullPage={false}
         components={{
           Code,
           Collection,
@@ -86,4 +87,41 @@ const StyledWrapper = styled.div`
   .notion-page {
     padding: 0;
   }
+  blockquote {
+      position: fixed;
+      right: 30px; /* 오른쪽에서 20px 떨어진 위치에 고정 */
+      top: 50%; /* 화면의 중간에 위치 */
+      transform: translateY(-50%); /* 수직 중앙 정렬 */
+      width: 350px; /* 필요에 따라 조정 */
+      z-index: 1000; /* 다른 요소들 위에 위치 */
+  }
+  /* 태블릿 및 모바일 (가로 폭 1600px 이하) */
+  @media screen and (max-width: 1600px) {
+      blockquote {
+          position: static; /* 고정 위치 해제 */
+          right: auto;
+          top: auto;
+          width: 100%;
+          transform: none;
+          width: 100%;
+      }
+  }
+
+  /* 모바일 (가로 폭 768px 이하) */
+  @media screen and (max-width: 768px) {
+      blockquote {
+          position: static; /* 고정 위치 해제 */
+          right: auto;
+          top: auto;
+          transform: none;
+          width: 100%;
+      }
+  }
+  .notion-quote {
+      padding: 20px; /* 패딩 */
+      border: 1px solid #ddd; /* 테두리 */
+      border-radius: 15px; /* 모서리 둥글게 */
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+  }
+
 `
