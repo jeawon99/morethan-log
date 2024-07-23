@@ -30,7 +30,7 @@ const Header: React.FC<Props> = ({ fullWidth }) => {
   }, []);
 
   return (
-    <StyledWrapper>
+    <StyledWrapper scrollWidth={scrollWidth}>
       <div data-full-width={fullWidth} className="container">
         <Logo />
         <div className="nav">
