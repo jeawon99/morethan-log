@@ -32,6 +32,7 @@
 import { useSession, getSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
 import { useState } from "react";
+import AuthContent from "../components/AuthContent"
 
 export default function AdminPage() {
   const { data: session } = useSession();
@@ -67,6 +68,9 @@ export default function AdminPage() {
       <button onClick={() => revalidate()}>
         {loading ? 'Revalidating...' : 'Revalidate All Posts'}
       </button>
+      <div>
+        <AuthContent></AuthContent>
+      </div>
     </div>
   );
 }

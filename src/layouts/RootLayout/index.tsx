@@ -1,3 +1,4 @@
+import SupabaseProvider from "../../components/Provider/SupabaseProvider"; // 적절한 경로로 수정
 import React, { ReactNode, useEffect } from "react"
 import { ThemeProvider } from "./ThemeProvider"
 import useScheme from "src/hooks/useScheme"
@@ -52,13 +53,15 @@ const RootLayout = ({ children }: Props) => {
   }, []);
 
   return (
-    <ThemeProvider scheme={scheme}>
-      <Scripts />
-      {/* // TODO: replace react query */}
-      {/* {metaConfig.type !== "Paper" && <Header />} */}
-      <Header fullWidth={false} />
-      <StyledMain>{children}</StyledMain>
-    </ThemeProvider>
+    <SupabaseProvider>
+      <ThemeProvider scheme={scheme}>
+        <Scripts />
+        {/* // TODO: replace react query */}
+        {/* {metaConfig.type !== "Paper" && <Header />} */}
+        <Header fullWidth={false} />
+        <StyledMain>{children}</StyledMain>
+      </ThemeProvider>
+    </SupabaseProvider>
   )
 }
 
