@@ -16,6 +16,20 @@ export const createComment = async (parentId: number | null, content: string, sl
   return result.data;
 };
 
+//댓글 생성 세부적으로
+export const createDetailComment = async (parentId: number | null, content: string, slug: string, author: string, avatar_url: string) => {
+    const result = await supabase
+      .from('Comments')
+      .insert([
+        { parent_id: parentId, content, slug, author, avatar_url}
+      ]);
+  
+  //   console.log(result);
+  
+    if (result.error) throw result.error;
+    return result.data;
+  };
+
 // 댓글 조회
 export const getComments = async (slug: string) => {
 

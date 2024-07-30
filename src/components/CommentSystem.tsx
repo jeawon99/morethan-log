@@ -7,11 +7,12 @@ import { useEffect, useState } from 'react';
 
 import { useUser } from "@supabase/auth-helpers-react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { createComment, getComments, deleteComment, updateComment, anonymizeComment  } from '../apis/supabase/commentApi'
+import { createComment, getComments, deleteComment, updateComment, anonymizeComment, createDetailComment  } from '../apis/supabase/commentApi'
 import { addCommentReaction, deleteCommentReactions } from '../apis/supabase/commentReactionApi'
 import { getCommentReactions  } from '../apis/supabase/commentReactionApi'
 import { processComments } from '../libs/utils/supabase/processComments'
 import { useRouter } from "next/router"
+import { generateKoreanPhrase } from '../libs/generateKoreanPhrase';
 
 
 export interface Reaction {
@@ -41,8 +42,58 @@ export default function App() {
     ? router.query.slug
     : "";
 
-  const handleAddReaction = async (commentId: number, emoji: string, userId: string) => {
-    var participating = false;
+//   const handleAddReaction = async (commentId: number, emoji: string, userId: string) => {
+//     var participating = false;
+//     const addReactionToComment = (comment: CommentData): CommentData => {
+//       if (comment.comment_id === commentId) {
+//         let reactionIndex = comment.reactions.findIndex(reaction => reaction.emoji === emoji);
+
+//         if (reactionIndex !== -1) {
+//           // 반응이 이미 있으면
+//           let reaction = comment.reactions[reactionIndex];
+//           if (reaction.participating) {
+//             // 참여 중인 경우, 카운트 감소
+//             reaction = { ...reaction, count: reaction.count - 1, participating: false };
+//             participating = true;
+//           } else {
+//             // 참여 중이지 않은 경우, 카운트 증가
+//             reaction = { ...reaction, count: reaction.count + 1, participating: true };
+//             participating = false;
+//           }
+//           // 갱신된 반응 배열 생성
+//           const updatedReactions = [
+//             ...comment.reactions.slice(0, reactionIndex),
+//             reaction,
+//             ...comment.reactions.slice(reactionIndex + 1)
+//           ];
+//           return { ...comment, reactions: updatedReactions };
+//         } else {
+//           participating = false;
+//           return {
+//             ...comment,
+//             reactions: [...comment.reactions, { emoji, count: 1, participating: true }]
+//           };
+//         }
+//       } else {
+//         // 재귀적으로 답글 처리
+//         return {
+//           ...comment,
+//           replies: comment.replies.map(reply => addReactionToComment(reply))
+//         };
+//       }
+//     };
+    
+//     // 전체 댓글 목록 업데이트
+//     setComments(prevComments => prevComments.map(comment => addReactionToComment(comment)));
+
+    
+//     if (participating) {
+//       await deleteCommentReactions(commentId, emoji);
+//     } else {
+//       await addCommentReaction(commentId, emoji);
+//     }
+//   };
+const handleAddReaction = async (commentId: number, emoji: string, userId: string) => {
     const addReactionToComment = (comment: CommentData): CommentData => {
       if (comment.comment_id === commentId) {
         let reactionIndex = comment.reactions.findIndex(reaction => reaction.emoji === emoji);
@@ -53,11 +104,16 @@ export default function App() {
           if (reaction.participating) {
             // 참여 중인 경우, 카운트 감소
             reaction = { ...reaction, count: reaction.count - 1, participating: false };
-            participating = true;
+            // 비동기 작업 예약
+            setTimeout(async () => {
+                await deleteCommentReactions(commentId, emoji);
+            }, 0);
           } else {
             // 참여 중이지 않은 경우, 카운트 증가
             reaction = { ...reaction, count: reaction.count + 1, participating: true };
-            participating = false;
+            setTimeout(async () => {
+                await addCommentReaction(commentId, emoji);
+            }, 0);
           }
           // 갱신된 반응 배열 생성
           const updatedReactions = [
@@ -67,12 +123,14 @@ export default function App() {
           ];
           return { ...comment, reactions: updatedReactions };
         } else {
-          // 새로운 반응 추가
-          participating = false;
-          return {
-            ...comment,
-            reactions: [...comment.reactions, { emoji, count: 1, participating: true }]
-          };
+
+            setTimeout(async () => {
+                await addCommentReaction(commentId, emoji);
+            }, 0);
+            return {
+                ...comment,
+                reactions: [...comment.reactions, { emoji, count: 1, participating: true }]
+            };
         }
       } else {
         // 재귀적으로 답글 처리
@@ -82,15 +140,12 @@ export default function App() {
         };
       }
     };
+    
     // 전체 댓글 목록 업데이트
     setComments(prevComments => prevComments.map(comment => addReactionToComment(comment)));
 
-    if (participating) {
-      await deleteCommentReactions(commentId, emoji);
-    } else {
-      await addCommentReaction(commentId, emoji);
-    }
   };
+
 
   const handleAddComment = async (content: string, parentId: number | null) => {
     try {
@@ -102,6 +157,21 @@ export default function App() {
     } catch (error) {
       // 댓글 추가 중 발생한 에러를 로깅
       console.error('Error adding comment:', error);
+    }
+  };
+
+  const handleAddDetailComment = async (content: string, parentId: number | null, author: string, avatar_url: string) => {
+    try {
+
+        const userId = user? user.id:"1";
+        const phrase = generateKoreanPhrase(userId, slug);
+        await createDetailComment(parentId, content, slug, phrase, avatar_url);
+    
+        // 댓글 추가 후 데이터를 다시 로드하는 기존 로직 호출
+        loadInitialData();
+    } catch (error) {
+        // 댓글 추가 중 발생한 에러를 로깅
+        console.error('Error adding comment:', error);
     }
   };
 
@@ -172,9 +242,10 @@ export default function App() {
         onAddReaction={handleAddReaction}
         onEdit={handleEditComment}
         onDelete={handleDeleteComment}
-        onReplySubmit={handleAddComment} // 추가된 부분
+        onReplySubmit={handleAddComment}
+        onDetialReplySubmit={handleAddDetailComment}
       />
-      <CommentForm parentId={null} onSubmit={handleAddComment}/>
+      <CommentForm parentId={null} onSubmit={handleAddComment} onDetialReplySubmit={handleAddDetailComment}/>
     </ThemeProvider>
   );
 }

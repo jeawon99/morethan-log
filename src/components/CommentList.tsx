@@ -26,10 +26,11 @@ replies: CommentData[];
     onAddReaction: (commentId: number, emoji: string, userId: string) => void;
     onEdit: (commentId: number, newContent: string) => void;
     onDelete: (commentId: number) => void;
-    onReplySubmit: (comment: string, parentId: number | null) => Promise<void>; // 추가된 부분
+    onReplySubmit: (comment: string, parentId: number | null) => Promise<void>;
+    onDetialReplySubmit: (comment: string, parentId: number | null, author: string, avatar_url:string) => Promise<void>;
   }
 
-const CommentList: React.FC<CommentListProps> = ({ comments, onAddReaction, onEdit, onDelete, onReplySubmit }) => {
+const CommentList: React.FC<CommentListProps> = ({ comments, onAddReaction, onEdit, onDelete, onReplySubmit, onDetialReplySubmit }) => {
     return (
       <div>
         {comments.map((comment) => (
@@ -47,6 +48,7 @@ const CommentList: React.FC<CommentListProps> = ({ comments, onAddReaction, onEd
               onEdit={onEdit}
               onDelete={onDelete}
               onReplySubmit={onReplySubmit} // 추가된 부분
+              onDetialReplySubmit={onDetialReplySubmit}
             />
             {comment.replies && comment.replies.length > 0 && (
               <div style={{ paddingLeft: '20px' }}>
@@ -56,6 +58,7 @@ const CommentList: React.FC<CommentListProps> = ({ comments, onAddReaction, onEd
                   onEdit={onEdit}
                   onDelete={onDelete}
                   onReplySubmit={onReplySubmit} // 추가된 부분
+                  onDetialReplySubmit={onDetialReplySubmit}
                 />
               </div>
             )}

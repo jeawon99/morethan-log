@@ -5,7 +5,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { createComment, getComments  } from '../apis/supabase/commentApi'
 import { getCommentReactions  } from '../apis/supabase/commentReactionApi'
 import { processComments } from '../libs/utils/supabase/processComments'
-
+import { generateKoreanPhrase } from '../libs/generateKoreanPhrase';
 
 const AuthContent = () => {
   const supabase = createClientComponentClient(); //로그아웃 메서드를 받아오기 위해서 사용
@@ -98,6 +98,12 @@ const AuthContent = () => {
       console.error('Error creating comment:', error);
     }
   };
+  const generateKorean = async () => {
+    const userId = user? user.id:"123";
+    const slug  = "index1"
+    const phrase = generateKoreanPhrase(userId, slug);
+    console.log(phrase);
+  };
   return (
     <div className="font-semibold h-full flex flex-col items-center justify-center">
       {user && <div>안녕하세요 {user?.user_metadata.full_name}님</div>}
@@ -124,6 +130,9 @@ const AuthContent = () => {
         <br/>
         <br/>
         <button onClick={handleandProecess}> Proecess </button>
+        <br/>
+        <br/>
+        <button onClick={generateKorean}> 한국어 생성 </button>
       </div>
     </div>
   );

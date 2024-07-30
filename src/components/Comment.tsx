@@ -40,7 +40,8 @@ interface CommentProps {
   onAddReaction: (commentId: number, emoji: string, userId: string) => void;
   onEdit: (commentId: number, newContent: string) => void; // onEdit 수정
   onDelete: (commentId: number) => void;
-  onReplySubmit: (comment: string, parentId: number | null) => Promise<void>; // 추가된 onReplySubmit prop
+  onReplySubmit: (comment: string, parentId: number | null) => Promise<void>;
+  onDetialReplySubmit: (comment: string, parentId: number | null, author: string, avatar_url: string) => Promise<void>; 
 }
 const CommentContainer = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -99,24 +100,32 @@ const StyledEmoji= styled(Typography)`
   font-size: 15px; // 폰트 크기를 16px로 설정
   color: #37352F; // 예를 들어, 파란색으로 설정
 `
+
+
+interface ReactionButtonProps {
+  participating: string;
+}
+
+
 const ReactionContainer = styled(Box)({
   display: 'flex',
   alignItems: 'center',
   marginTop: '8px',
 });
 
-const ReactionButton = styled(Box)({
+const ReactionButton = styled(Box)<ReactionButtonProps>(({ theme, participating }) => ({
   display: 'flex',
   alignItems: 'center',
   padding: '1px 6px',
-  background: '#f0f0f0',
+  background: participating ? theme.palette.info.main : '#f0f0f0',
   borderRadius: '16px',
   cursor: 'pointer',
   marginRight: '8px',
-});
+  color: participating ? '#ffffff' : '#000000',
+}));
 
 
-const Comment: React.FC<CommentProps> = ({ comment_id, parent_id, author, date, content, avatarUrl, reactions, user_uuid, onAddReaction, onEdit, onDelete, onReplySubmit }) => {
+const Comment: React.FC<CommentProps> = ({ comment_id, parent_id, author, date, content, avatarUrl, reactions, user_uuid, onAddReaction, onEdit, onDelete, onReplySubmit, onDetialReplySubmit }) => {
   const [openModal, setOpenModal] = React.useState(false);
   const user = useUser(); //useUser훅을 통해 유저데이터를 받아옴
   const user_id = user? user.id : "-1"
@@ -195,8 +204,8 @@ const Comment: React.FC<CommentProps> = ({ comment_id, parent_id, author, date, 
         {parent_id === null && (
           <Button sx={{paddingRight:1.2, borderRadius: "16px", padding:0}} onClick={toggleReplyForm}>답글</Button>
         )}
-          {reactions.map((reaction) => (
-            <ReactionButton sx={{paddingRight:1.2}} key={reaction.emoji} onClick={() => handleAddReaction(reaction.emoji)}>
+          {reactions.filter(reaction => reaction.count > 0).map((reaction) => (
+            <ReactionButton participating={reaction.participating? "true": "false"} sx={{paddingRight:1.2}} key={reaction.emoji} onClick={() => handleAddReaction(reaction.emoji)}>
               <StyledEmoji>
                 
               <span role="img" aria-label="emoji" style={{ fontSize: '1rem', marginRight: '2px' }}>{reaction.emoji}</span>
@@ -207,7 +216,7 @@ const Comment: React.FC<CommentProps> = ({ comment_id, parent_id, author, date, 
           ))}
         </ReactionContainer>
 
-        {showReplyForm && <CommentForm parentId={comment_id} onSubmit={onReplySubmit} />}
+        {showReplyForm && <CommentForm parentId={comment_id} onSubmit={onReplySubmit} onDetialReplySubmit={onDetialReplySubmit}/>}
       
       </CommentText>
     </CommentContainer>

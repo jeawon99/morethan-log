@@ -25,6 +25,8 @@ const LoginRequiredDialog: React.FC<LoginRequiredDialogProps> = ({ open, onClose
         sx={{
             '& .MuiPaper-root': { // Dialog 내부의 Paper 컴포넌트에 스타일 적용
             borderRadius: '16px', // 모서리를 둥글게
+            paddingBottom: '5px',
+            paddingRight: '5px'
             }
         }}
         >

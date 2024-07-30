@@ -38,6 +38,56 @@ export default function App() {
   const [comments, setComments] = useState<CommentData[]>([]);
 
 
+  // const handleAddReaction = async (commentId: number, emoji: string, userId: string) => {
+  //   var participating = false;
+  //   const addReactionToComment = (comment: CommentData): CommentData => {
+  //     if (comment.comment_id === commentId) {
+  //       let reactionIndex = comment.reactions.findIndex(reaction => reaction.emoji === emoji);
+
+  //       if (reactionIndex !== -1) {
+  //         // 반응이 이미 있으면
+  //         let reaction = comment.reactions[reactionIndex];
+  //         if (reaction.participating) {
+  //           // 참여 중인 경우, 카운트 감소
+  //           reaction = { ...reaction, count: reaction.count - 1, participating: false };
+  //           participating = true;
+  //         } else {
+  //           // 참여 중이지 않은 경우, 카운트 증가
+  //           reaction = { ...reaction, count: reaction.count + 1, participating: true };
+  //           participating = false;
+  //         }
+  //         // 갱신된 반응 배열 생성
+  //         const updatedReactions = [
+  //           ...comment.reactions.slice(0, reactionIndex),
+  //           reaction,
+  //           ...comment.reactions.slice(reactionIndex + 1)
+  //         ];
+  //         return { ...comment, reactions: updatedReactions };
+  //       } else {
+  //         // 새로운 반응 추가
+  //         participating = false;
+  //         return {
+  //           ...comment,
+  //           reactions: [...comment.reactions, { emoji, count: 1, participating: true }]
+  //         };
+  //       }
+  //     } else {
+  //       // 재귀적으로 답글 처리
+  //       return {
+  //         ...comment,
+  //         replies: comment.replies.map(reply => addReactionToComment(reply))
+  //       };
+  //     }
+  //   };
+  //   // 전체 댓글 목록 업데이트
+  //   setComments(prevComments => prevComments.map(comment => addReactionToComment(comment)));
+
+  //   if (participating) {
+  //     await deleteCommentReactions(commentId, emoji);
+  //   } else {
+  //     await addCommentReaction(commentId, emoji);
+  //   }
+  // };
   const handleAddReaction = async (commentId: number, emoji: string, userId: string) => {
     var participating = false;
     const addReactionToComment = (comment: CommentData): CommentData => {
@@ -64,8 +114,6 @@ export default function App() {
           ];
           return { ...comment, reactions: updatedReactions };
         } else {
-          // 새로운 반응 추가
-          participating = false;
           return {
             ...comment,
             reactions: [...comment.reactions, { emoji, count: 1, participating: true }]
@@ -88,75 +136,6 @@ export default function App() {
       await addCommentReaction(commentId, emoji);
     }
   };
-
-
-  // const handleAddReaction = async (commentId: number, emoji: string, userId: string, participating:boolean) => {
-  //   try {
-  //     if (participating) {
-
-  //     } else {
-
-  //     }
-  //     loadInitialData();
-  //   } catch (error) {
-  //     // 댓글 추가 중 발생한 에러를 로깅
-  //     console.error('Error adding comment:', error);
-  //   }
-  // };
-
-  // const handleAddComment = (content: string, parentId: number | null) => {
-  //   const newComment: CommentData = {
-  //     comment_id: comments.length + 1, // 새로운 comment_id 생성
-  //     slug: 'slug', // slug는 고정값으로 설정
-  //     parent_id: parentId,
-  //     author: "NewUser",
-  //     date: new Date().toISOString().split('T')[0], // 현재 날짜
-  //     content,
-  //     avatarUrl: "",
-  //     user_uuid: "3",
-  //     reactions: [],
-  //     replies: []
-  //   };
-
-  //   if (parentId === null) {
-  //     setComments([...comments, newComment]);
-  //   } else {
-  //     setComments(prevComments =>
-  //       prevComments.map(comment =>
-  //         comment.comment_id === parentId
-  //           ? { ...comment, replies: [...comment.replies, newComment] }
-  //           : comment
-  //       )
-  //     );
-  //   }
-  // };
-  // const handleAddComment = async (content: string, parentId: number | null) => {
-  //   const newComment: CommentData = {
-  //     comment_id: comments.length + 1, // 새로운 comment_id 생성
-  //     slug: 'slug', // slug는 고정값으로 설정
-  //     parent_id: parentId,
-  //     author: "NewUser",
-  //     date: new Date().toISOString().split('T')[0], // 현재 날짜
-  //     content,
-  //     avatarUrl: "",
-  //     user_uuid: "3",
-  //     reactions: [],
-  //     replies: []
-  //   };
-
-  //   if (parentId === null) {
-  //     setComments([...comments, newComment]);
-  //   } else {
-  //     setComments(prevComments =>
-  //       prevComments.map(comment =>
-  //         comment.comment_id === parentId
-  //           ? { ...comment, replies: [...comment.replies, newComment] }
-  //           : comment
-  //       )
-  //     );
-  //   }
-  // };
-
   const handleAddComment = async (content: string, parentId: number | null) => {
     try {
       const slug = "index1"
@@ -171,27 +150,6 @@ export default function App() {
     }
   };
 
-
-  // const handleEditComment = (commentId: number, newContent: string) => {
-  //   const editCommentContent = (comment: CommentData): CommentData => {
-  //     if (comment.comment_id === commentId) {
-  //       return {
-  //         ...comment,
-  //         content: newContent
-  //       };
-  //     } else {
-  //       return {
-  //         ...comment,
-  //         replies: comment.replies.map(reply => editCommentContent(reply))
-  //       };
-  //     }
-  //   };
-
-  //   setComments(prevComments => prevComments.map(comment => editCommentContent(comment)));
-  // };
-
-
-
   const handleEditComment = async (commentId: number, newContent: string) => {
     try {
       await updateComment(commentId, newContent);
@@ -201,33 +159,6 @@ export default function App() {
       console.error('Error adding comment:', error);
     }
   };
-
-
-
-
-  // const handleDeleteComment = (commentId: number) => {
-  //   const recursivelyMarkCommentAsDeleted = (comments: any[]): any[] => {
-  //     return comments.map(comment => {
-  //       if (comment.comment_id === commentId) {
-  //         if (comment.replies.length > 0) {
-  //           // 답글이 있으면 내용만 변경
-  //           return { ...comment, content: "삭제된 댓글입니다." };
-  //         } else {
-  //           // 답글이 없는 댓글은 삭제
-  //           return null;  // filter에서 제거됨
-  //         }
-  //       } else {
-  //         // 답글 배열도 재귀적으로 처리
-  //         return { ...comment, replies: recursivelyMarkCommentAsDeleted(comment.replies) };
-  //       }
-  //     }).filter(comment => comment !== null); // null이 아닌 댓글만 유지
-  //   };
-  
-  //   // @ts-ignore 를 사용하여 타입 체크 무시
-  //   //@ts-ignore
-  //   setComments(prevComments => recursivelyMarkCommentAsDeleted(prevComments));
-  // };
-  
 
   const handleDeleteComment = async (commentId: number) => {
     try {
@@ -269,6 +200,7 @@ export default function App() {
 
       // 서버에서 받은 데이터를 처리하여 상태를 초기화
       const processedData = processComments(Commentdata, Reactiondata, currentUserUuid);
+      console.log(processedData);
       setComments(processedData);
     } catch (error) {
       console.error('Error loading comments:', error);
