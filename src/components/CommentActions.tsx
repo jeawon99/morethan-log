@@ -7,6 +7,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { pretendard } from "src/assets";
 import { useUser } from "@supabase/auth-helpers-react";
 import LoginRequiredDialog from './LoginRequiredDialog';
+import DeleteCheckDialog from './DeleteCheckDialog';
 
 interface CommentActionsProps {
   onAddReaction: (reaction: string) => void;
@@ -35,6 +36,7 @@ export const CommentActions: React.FC<CommentActionsProps> = ({
   is_author,
 }) => {
     const [openModal, setOpenModal] = React.useState(false);
+    const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
     const [editMenuAnchorEl, setEditMenuAnchorEl] = React.useState<null | HTMLElement>(null);
     const [emojiPopoverAnchorEl, setEmojiPopoverAnchorEl] = React.useState<null | HTMLElement>(null);
     const user = useUser(); //useUser훅을 통해 유저데이터를 받아옴
@@ -69,6 +71,16 @@ export const CommentActions: React.FC<CommentActionsProps> = ({
         setOpenModal(false);
       };
 
+    const handleDeleteModalClose = () => {
+        setOpenDeleteModal(false);
+      };
+    const handleDeleteModalConfirm = async () => {
+        await onDelete();
+        handleDeleteModalClose();
+    }
+    const handleDeleteModalOpen = () => {
+        setOpenDeleteModal(true);
+      };
     const Styleddate = styled(Typography)`
         font-family: ${pretendard.style.fontFamily};  // 폰트 객체 직접 사용
         font-weight: 500;  // 원하는 폰트 가중치 설정
@@ -76,6 +88,7 @@ export const CommentActions: React.FC<CommentActionsProps> = ({
     return (
         <>
             <LoginRequiredDialog open={openModal} onClose={handleModalClose} />
+            <DeleteCheckDialog open={openDeleteModal} title="댓글삭제" onClose={handleDeleteModalClose} onConfirm={handleDeleteModalConfirm} />
             <ButtonGroup size="small" color="inherit" variant="contained">
                 <Button color="inherit" onClick={handleEmojiPopoverOpen} sx={{ width: 20, height: 20 }}>
                 <AddReactionOutlinedIcon sx={{ fontSize: 15 }}/>
@@ -104,7 +117,7 @@ export const CommentActions: React.FC<CommentActionsProps> = ({
                     <EditIcon />
                     <Styleddate sx={{ marginLeft: 0.5 }}>편집</Styleddate>
                 </MenuItem>
-                <MenuItem onClick={onDelete}>
+                <MenuItem onClick={handleDeleteModalOpen}>
                     <DeleteIcon />
                     <Styleddate sx={{ marginLeft: 0.5 }}>삭제</Styleddate>
                 </MenuItem>

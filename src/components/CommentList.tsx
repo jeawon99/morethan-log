@@ -51,7 +51,7 @@ const CommentList: React.FC<CommentListProps> = ({ comments, onAddReaction, onEd
               onDetialReplySubmit={onDetialReplySubmit}
             />
             {comment.replies && comment.replies.length > 0 && (
-              <div style={{ paddingLeft: '20px' }}>
+              <div style={{ paddingLeft: '35px' }}>
                 <CommentList
                   comments={comment.replies}
                   onAddReaction={onAddReaction}

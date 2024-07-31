@@ -107,32 +107,49 @@ interface ReactionButtonProps {
 }
 
 
-const ReactionContainer = styled(Box)({
-  display: 'flex',
-  alignItems: 'center',
-  marginTop: '8px',
-});
+
+  
+const ReactionContainer = styled(Box)`
+display: flex;
+align-items: center;
+margin-top: 8px;
+flex-wrap: wrap;
+overflow: hidden; // 기본적으로 overflow를 숨김
+transition: max-height 0.3s ease; // 애니메이션 효과 추가
+`;
 
 const ReactionButton = styled(Box)<ReactionButtonProps>(({ theme, participating }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  padding: '1px 6px',
-  background: participating ? theme.palette.info.main : '#f0f0f0',
-  borderRadius: '16px',
-  cursor: 'pointer',
-  marginRight: '8px',
-  color: participating ? '#ffffff' : '#000000',
-}));
-
+    display: 'flex',
+    alignItems: 'center',
+    padding: '1px 6px',
+    background: participating==="true" ? theme.palette.info.main : '#f0f0f0',
+    borderRadius: '16px',
+    cursor: 'pointer',
+    marginRight: '8px',
+  }));
 
 const Comment: React.FC<CommentProps> = ({ comment_id, parent_id, author, date, content, avatarUrl, reactions, user_uuid, onAddReaction, onEdit, onDelete, onReplySubmit, onDetialReplySubmit }) => {
   const [openModal, setOpenModal] = React.useState(false);
-  const user = useUser(); //useUser훅을 통해 유저데이터를 받아옴
+  const user = useUser();
   const user_id = user? user.id : "-1"
   const [showReplyForm, setShowReplyForm] = useState(false);
-  const [isEditing, setIsEditing] = useState(false); // 추가된 상태
-  const [editedContent, setEditedContent] = useState(content); // 추가된 상태
-  
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState(content);
+
+
+  const [showAll, setShowAll] = useState(false);
+
+  const topReactions = reactions
+    .filter(reaction => reaction.count > 0)
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
+
+  const allReactions = reactions.filter(reaction => reaction.count > 0);
+
+  const reactionsToShow = showAll ? allReactions : topReactions;
+
+
+
   const handleAddReaction = (emoji: string) => {
     if (!user) {
       setOpenModal(true);
@@ -202,20 +219,33 @@ const Comment: React.FC<CommentProps> = ({ comment_id, parent_id, author, date, 
         )}
         <ReactionContainer>
         {parent_id === null && (
-          <Button sx={{paddingRight:1.2, borderRadius: "16px", padding:0}} onClick={toggleReplyForm}>답글</Button>
+            <Button
+            sx={{ paddingRight: 1.2, borderRadius: '16px', padding: 0 }}
+            onClick={toggleReplyForm}
+            >
+            답글
+            </Button>
         )}
-          {reactions.filter(reaction => reaction.count > 0).map((reaction) => (
-            <ReactionButton participating={reaction.participating? "true": "false"} sx={{paddingRight:1.2}} key={reaction.emoji} onClick={() => handleAddReaction(reaction.emoji)}>
-              <StyledEmoji>
-                
-              <span role="img" aria-label="emoji" style={{ fontSize: '1rem', marginRight: '2px' }}>{reaction.emoji}</span>
+        {reactionsToShow.map((reaction) => (
+            <ReactionButton
+            participating={reaction.participating ? "true" : "false"}
+            key={reaction.emoji}
+            onClick={() => handleAddReaction(reaction.emoji)}
+            >
+            <StyledEmoji>
+                <span role="img" aria-label="emoji" style={{ fontSize: '1rem', marginRight: '2px' }}>
+                {reaction.emoji}
+                </span>
                 {reaction.count}
-              
-              </StyledEmoji>
+            </StyledEmoji>
             </ReactionButton>
-          ))}
+        ))}
+        {allReactions.length > 5 && (
+            <Button onClick={() => setShowAll(!showAll)}>
+            {showAll ? '간략히 보기' : '더보기'}
+            </Button>
+        )}
         </ReactionContainer>
-
         {showReplyForm && <CommentForm parentId={comment_id} onSubmit={onReplySubmit} onDetialReplySubmit={onDetialReplySubmit}/>}
       
       </CommentText>
