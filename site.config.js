@@ -18,8 +18,8 @@ const CONFIG = {
   ],
   // blog setting (required)
   blog: {
-    title: "Suno AI 가이드",
-    description: "welcome to morethan-log!",
+    title: "AI Music 가이드",
+    description: "welcome to AI Music 가이드!",
     scheme: "dark", // 'light' | 'dark' | 'system'
   },
 
