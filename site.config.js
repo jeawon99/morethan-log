@@ -24,10 +24,10 @@ const CONFIG = {
   },
 
   // CONFIG configration (required)
-  link: "https://morethan-log.vercel.app",
+  link: "https://aimg.kr",
   since: 2024, // If leave this empty, current year will be used.
   lang: "ko-KR", // ['en-US', 'zh-CN', 'zh-HK', 'zh-TW', 'ja-JP', 'es-ES', 'ko-KR']
-  ogImageGenerateURL: "https://og-image-korean.vercel.app", // The link to generate OG image, don't end with a slash
+  ogImageGenerateURL: "https://og-image-korean.vercel.app/AI%20Music%20%EA%B0%80%EC%9D%B4%EB%93%9C.png?theme=light&md=0&fontSize=200px&images=https%3A%2F%2Fassets.vercel.com%2Fimage%2Fupload%2Ffront%2Fassets%2Fdesign%2Fhyper-color-logo.svg&images=https%3A%2F%2Fouch-cdn2.icons8.com%2F8Ab4avEYH7If_IO6fTodwMzfYlEVuFO1WdJmq71V4to%2Frs%3Afit%3A368%3A368%2FczM6Ly9pY29uczgu%2Fb3VjaC1wcm9kLmFz%2Fc2V0cy9wbmcvNDMw%2FL2FjNWU2NjUxLWRj%2FMGItNDJlNy05NTAy%2FLWJlM2EyMDhkMDVk%2FNS5wbmc.png&images=https%3A%2F%2Fouch-cdn2.icons8.com%2FOqOu0fwz3Wl6ZPjYPBcv94Bwu131EkcxO5yzRcblOFE%2Frs%3Afit%3A368%3A368%2FczM6Ly9pY29uczgu%2Fb3VjaC1wcm9kLmFz%2Fc2V0cy9wbmcvMjE0%2FL2IyNzk5ZGM0LWUy%2FMjUtNDRjZC05NGE1%2FLTI0Y2IwNTk2Y2Vi%2FYS5wbmc.png&widths=300&widths=300&widths=300&heights=300&heights=300&heights=300", // The link to generate OG image, don't end with a slash
 
   // notion configuration (required)
   notionConfig: {
