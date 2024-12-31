@@ -47,7 +47,7 @@ export default async function handler(
   const { secret, path } = req.query;
 
   // 비밀 토큰 확인
-  if (secret !== process.env.TOKEN_FOR_REVALIDATE) {
+  if (secret !== process.env.MY_SECRET_TOKEN) {
     return res.status(401).json({ message: 'Invalid token' });
   }
 
