@@ -23,7 +23,7 @@ export const authOptions = {
     async session({ session, token }: { session: Session, token: JWT }) {
       if (session.user) {
         session.user.email = token.email; // 세션에 사용자 ID를 저장함
-        if (token.email == process.env.GITHUB_ADMIN_EMAIL) {
+        if (token.email == process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
           session.user.role = "admin"; // 세션에 사용자 ID를 저장함
         }
       }
