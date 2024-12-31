@@ -36,6 +36,16 @@ class MyDocument extends Document {
               />
             </>
           )}
+          {/* Google AdSense 인증 메타 태그 */}
+          {CONFIG.googleAdSense.enable === true && (
+            <>
+              <meta
+                name="google-adsense-account"
+                content={CONFIG.googleAdSense.config.siteVerification}
+              />
+            </>
+          )}
+          {/* Google Analytics */}
         </Head>
         <body>
           <Main />
