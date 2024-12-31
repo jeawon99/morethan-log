@@ -40,9 +40,9 @@ export default function AdminPage() {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
   const user = useUser();
-  console.log(user?.email);
+  // console.log(user?.email);
   // console.log(process.env.GITHUB_ADMIN_EMAIL);
-  console.log(process.env.NEXT_PUBLIC_ADMIN_EMAIL);
+  // console.log(process.env.NEXT_PUBLIC_ADMIN_EMAIL);
   if (!user || user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
     return <div>Loading...</div>;
   }
